@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>添加球队</title>
+		<script type="text/javascript" src="/js/jquery-1.11.1.js"></script>
+		<script type="text/javascript" src="/js/bootstrap.js"></script>
+		<link rel="stylesheet" type="text/css" href="/css/bootstrap.css"></link>
+		<link rel="stylesheet" type="text/css" href="/css/style.css"></link>
+		<style>
+			label span{color: #ff0000; padding-right: 5px;}
+		</style>
+	</head>
+
+	<body>
+		<h2>添加球员</h2>
+		<form id="myForm" class="form-horizontal" method="post" action="/team">
+			<div class="form-group">
+				<label class="col-sm-1 control-label"><span>*</span>球员名字</label>
+				<div class="col-sm-9">
+					<input required="required" name="playerName" class="form-control" placeholder="请输入球员名字"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label"><span>*</span>号&nbsp;&nbsp;码</label>
+				<div class="col-sm-9">
+					<input required="required" name="playerNum" class="form-control" placeholder="请输入队内号码(0-100)" type="number" min="0" max="100"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">位&nbsp;&nbsp;置</label>
+				<div class="col-sm-9">
+					<input name="location" class="form-control" placeholder="请输入队内位置"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">生&nbsp;&nbsp;日</label>
+				<div class="col-sm-9">
+					<input name="birthday" type="date" class="form-control" placeholder="请输入生日"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">国&nbsp;&nbsp;籍</label>
+				<div class="col-sm-9">
+					<input name="nationality" class="form-control" placeholder="请输入所属国家"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">身&nbsp;&nbsp;高</label>
+				<div class="col-sm-2">
+					<input name="height" class="form-control" type="number" min="100" max="300" step="0.01"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">体&nbsp;&nbsp;重</label>
+				<div class="col-sm-2">
+					<input name="weight" class="form-control" type="number" min="50" max="300" step="0.01"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">工&nbsp;&nbsp;资</label>
+				<div class="col-sm-2">
+					<input name="salary" class="form-control" type="number" min="0.00" max="1000000.00" step="0.01"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">所属队伍</label>
+				<div class="col-sm-2">
+					<select name="teamId" class="form-control" id="selectTeam">
+<!--         				<option value="-1">请选择队伍</option>-->
+<!--         				<option value="1001">76人</option>-->
+<!--         				<option value="1002">篮网</option>-->
+			      	</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">是否退役</label>
+				<div class="col-sm-2">
+					<select name="status" class="form-control">
+						<option value="-1">-请选择-</option>
+						<option value="0">退役</option>
+						<option value="1">在职</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label"></label>
+				<div class="col-sm-9">
+					<button id="btnAdd" type="button" class="btn btn-sm btn-info">提&nbsp;交</button>
+					<button type="reset"  class="btn btn-sm btn-warning">重&nbsp;置</button>
+				</div>
+			</div>
+		</form>
+	</body>
+</html>
+<script>
+	$(function () {
+		//提交按钮的单击事件
+		$("#btnAdd").click(function () {
+			$.ajax({
+				type: "POST",
+				url: "/player/",
+				data: $("#myForm").serialize(),
+				dataType:"json",
+				success: function(vo){
+					if(vo.code==200) {
+						window.location.href = "/pages/player/list.html";
+					}else{
+						alert("添加失败！"+vo.msg);
+					}
+				}
+			});
+		});
+
+		$.ajax({//用来多选框的显示，ajax获得team所有信息，拼参id和中文名
+			url:"/team/getIdAndChineseName",
+			type:'get',
+			dataType:'json',
+			success:function(vo){
+				//返回一个vo 里面是list
+				let list=vo.list;
+				let str="";
+				str+='<option value="-1">请选择队伍</option>';
+				for(let i=0;i<list.length;i++){
+					let obj=list[i];
+					let teamId=obj.teamId;
+					let teamName=obj.chineseName;
+
+					str+='<option value="'+teamId+'">'+teamName+'</option>';
+				}
+				$("#selectTeam").html(str);
+			}
+		});
+	});
+</script>

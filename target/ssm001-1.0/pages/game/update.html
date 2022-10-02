@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>更新比赛记录</title>
+		<script type="text/javascript" src="/js/jquery-1.11.1.js"></script>
+		<script type="text/javascript" src="/js/bootstrap.js"></script>
+		<link rel="stylesheet" type="text/css" href="/css/bootstrap.css"></link>
+		<link rel="stylesheet" type="text/css" href="/css/style.css"></link>
+		<style>
+			label span{color: #ff0000; padding-right: 5px;}
+		</style>
+	</head>
+
+	<body>
+		<h2>更新比赛记录</h2>
+		<form id="myForm" class="form-horizontal">
+			<!--springmvc的restful风格处理非get post方式请求必备参数-->
+			<!--<input name="_method"  type="hidden" value="PUT"/>-->
+			<div class="form-group">
+				<label class="col-sm-1 control-label">比赛记录id</label>
+				<div class="col-sm-9">
+					<input required="required" name="gameId" class="form-control" readonly/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">比赛时间</label>
+				<div class="col-sm-9">
+					<input required="required" name="gameDate" class="form-control" type="datetime-local" pattern="yyyy-MM-dd HH:mm:ss" step="1"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">主队</label>
+				<div class="col-sm-2">
+					<select name="homeTeamId" class="form-control" id="selectTeam1">
+						<!--						<option value="-1">-请选择-</option>-->
+						<!--						<option value="0">退役</option>-->
+						<!--						<option value="1">在职</option>-->
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">主队得分</label>
+				<div class="col-sm-9">
+					<input required="" name="homeTeamScore" class="form-control" placeholder="请输入主队得分" type="number" min="0" max="1000"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">客队</label>
+				<div class="col-sm-2">
+					<select name="visitingTeamId" class="form-control" id="selectTeam2">
+						<!--						<option value="-1">-请选择-</option>-->
+						<!--						<option value="0">退役</option>-->
+						<!--						<option value="1">在职</option>-->
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">客队得分</label>
+				<div class="col-sm-9">
+					<input name="visitingTeamScore" class="form-control" placeholder="请输入客队分数" type="number" min="0" max="1000"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">比赛类型</label>
+				<div class="col-sm-2">
+					<select name="typeId" class="form-control">
+						<option value="-1">-请选择-</option>
+						<option value="1">季前赛</option>
+						<option value="2">常规赛</option>
+						<option value="3">季后赛</option>
+						<option value="4">总决赛</option>
+						<option value="5">全明星赛</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label">状态</label>
+				<div class="col-sm-2">
+					<select name="status" class="form-control">
+						<option value="-1">-请选择-</option>
+						<option value="0">正常</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-1 control-label"></label>
+				<div class="col-sm-9">
+					<button id="btnUpdate" type="button" class="btn btn-sm btn-info">提&nbsp;交</button>
+					<button type="reset"  class="btn btn-sm btn-warning">重&nbsp;置</button>
+				</div>
+			</div>
+		</form>
+	</body>
+</html>
+<script>
+	String.prototype.GetValue= function(para) {
+		let reg = new RegExp("(^|&)"+ para +"=([^&]*)(&|$)");
+		let r = this.substr(this.indexOf("\?")+1).match(reg);
+		if (r!=null) return unescape(r[2]); return null;
+	}
+	$(function () {
+		//根据地址获取teamId,如果null则执行增加，否则执行更新
+		let url = document.location.toString();//获取URL
+		//let homeTeamName=url.GetValue("homeTeamName");
+		//let visitingTeamName=url.GetValue("visitingTeamName");
+		let gameId=url.GetValue("gameId");
+		let pageNum=url.GetValue("pageNum");
+		let pageSize=url.GetValue("pageSize");
+		//alert(teamId);
+
+		// let homeTeamId=url.GetValue("homeTeamId");
+		// let visitingTeamId=url.GetValue("visitingTeamId");放外面不能读取，每次初始化为null
+
+		//根据id查询要更新的信息并回显到页面
+		queryById(gameId);
+//下拉框
+		$.ajax({//用来多选框的显示，ajax获得team所有信息，拼参id和中文名
+			url:"/team/getIdAndChineseName",
+			type:'get',
+			dataType:'json',
+			success:function(vo){
+				//返回一个vo 里面是list
+				let list=vo.list;
+				let str="";
+				str+='<option value="-1">请选择队伍</option>';
+				for(let i=0;i<list.length;i++){
+					let obj=list[i];
+					let teamId=obj.teamId;
+					let teamName=obj.chineseName;
+					str+='<option value="'+teamId+'">'+teamName+'</option>';
+				}
+				$("#selectTeam1").html(str);
+				$("#selectTeam2").html(str);
+				var id1=homeTeamId;
+				console.log(id1)
+				var id2=visitingTeamId;
+				console.log(id2)
+				$("#selectTeam1").val(id1);
+				$("#selectTeam2").val(id2);
+			}
+		});
+
+
+		//提交按钮的单击事件--实现真正的更新
+		$("#btnUpdate").click(function () {
+			$.ajax({
+				type: "POST",//这里必须写POST
+				url: "/game/"+gameId,
+				data: $("#myForm").serialize()+"&_method=PUT",
+				dataType:"json",
+				success: function(vo){
+					if(vo.code==200) {
+						window.location.href = "/pages/game/list.html?pageNum="+pageNum+"&pageSize="+pageSize;
+					}else{
+						alert("更新失败！"+vo.msg);
+					}
+				}
+			});
+		});
+	});
+	function queryById(gameId) {
+		$.ajax({
+			type: "GET",
+			url: "/game/"+gameId, //RESTful风格的API定义
+			data: "",
+			success: function (vo) {
+				let obj=vo.obj;//obj=game
+				let gameId=obj.gameId;
+				let gameDate=obj.gameDate;
+				homeTeamId=obj.homeTeamId;
+				//console.log(homeTeamId);
+				let homeTeamScore=obj.homeTeamScore;
+				visitingTeamId=obj.visitingTeamId;
+				let visitingTeamScore=obj.visitingTeamScore;
+				let typeId=obj.typeId;
+				let status=obj.status;
+				let isDel=obj.isDel;
+				$("input[name='gameId']").val(gameId);
+				$("input[name='gameDate']").val(gameDate);
+				//$("input[name='homeTeamId']").val(homeTeamId);
+				$("input[name='homeTeamScore']").val(homeTeamScore);
+				//$("input[name='visitingTeamId']").val(visitingTeamId);
+				// $("#selectTeam1").val(homeTeamId);
+				// $("#selectTeam2").val(visitingTeamId);
+				$("input[name='visitingTeamScore']").val(visitingTeamScore);
+				$("select[name='typeId']").val(typeId);
+				$("select[name='status']").val(status);
+
+			}
+		});
+	}
+
+</script>
