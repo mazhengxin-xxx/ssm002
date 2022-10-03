@@ -19,7 +19,8 @@ import java.util.Date;
 public class GameController {
     @InitBinder
     public void initBinder(ServletRequestDataBinder binder){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        //提交更新，精确到秒
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
     @Resource
