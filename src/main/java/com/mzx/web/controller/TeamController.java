@@ -6,9 +6,14 @@ import com.mzx.service.TeamService;
 import com.mzx.vo.QueryVO;
 import com.mzx.vo.ResultVO;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 //929日  11.30
 /*
@@ -87,7 +92,19 @@ public class TeamController {
         return new ResultVO(list);
     }
 
-
+    //上传logo，post请求   uploadUrl:"/team/"+teamId, //接受请求地址
+    @PostMapping("/{teamId}")
+    public void uploadImg(@RequestParam("logo") MultipartFile file, HttpServletRequest request,@PathVariable("teamId")Integer teamId) throws IOException {
+        //System.out.println(file.getOriginalFilename());
+        String name= UUID.randomUUID().toString().replace("-","")+file.getOriginalFilename();
+        //System.out.println(name);
+        String path= request.getServletContext().getRealPath("img/uploadFile");
+        //System.out.println(path);
+        File file1=new File(path,name);
+        file.transferTo(file1);
+        //将文件写入本地   再把路径保存到数据库
+        boolean flag=teamService.addTeamLogo(name,teamId);
+    }
 
 
 }

@@ -18,4 +18,7 @@ public interface TeamService {
     boolean updateTeam(Team team);
 
     List<Team> getIdAndChineseName();
+
+
+    boolean addTeamLogo(String name, Integer teamId);
 }

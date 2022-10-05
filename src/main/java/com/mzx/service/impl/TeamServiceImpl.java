@@ -106,4 +106,16 @@ public class TeamServiceImpl implements TeamService {
         return list;
     }
 
+    @Override
+    public boolean addTeamLogo(String name, Integer teamId) {
+        Team team = teamMapper.selectByPrimaryKey(teamId);
+        team.setTeamLogo(name);
+        int i = teamMapper.updateByPrimaryKey(team);
+        if (i==1){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
 }
