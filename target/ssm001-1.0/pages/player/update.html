@@ -118,7 +118,7 @@
 		//根据id查询要更新的球员信息并回显到页面
 
 		queryById(playerId);
-		//
+		//加上ajax获取下拉框的值    再把获取的信息中的下拉框value附上
 		$.ajax({//用来多选框的显示，ajax获得team所有信息，拼参id和中文名     再之后把teamid给了下拉框
 			url:"/team/getIdAndChineseName",
 			type:'get',

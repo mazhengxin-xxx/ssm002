@@ -65,7 +65,9 @@ public class TeamController {
     }
 
     @PutMapping("/{teamId}")
-    public ResultVO updateTeam(Team team){
+    public ResultVO updateTeam(@PathVariable("teamId")Integer teamId,Team team){// 没加注解teamId收到了
+        //System.out.println(team.getTeamId());
+        //team.setTeamId(teamId);
         boolean flag=teamService.updateTeam(team);
         if (flag){
             return new ResultVO();
@@ -94,7 +96,7 @@ public class TeamController {
 
     //上传logo，post请求   uploadUrl:"/team/"+teamId, //接受请求地址
     @PostMapping("/{teamId}")
-    public void uploadImg(@RequestParam("logo") MultipartFile file, HttpServletRequest request,@PathVariable("teamId")Integer teamId) throws IOException {
+    public ResultVO<Team> uploadImg(@RequestParam("logo") MultipartFile file, HttpServletRequest request,@PathVariable("teamId")Integer teamId) throws IOException {
         //System.out.println(file.getOriginalFilename());
         String name= UUID.randomUUID().toString().replace("-","")+file.getOriginalFilename();
         //System.out.println(name);
@@ -104,6 +106,11 @@ public class TeamController {
         file.transferTo(file1);
         //将文件写入本地   再把路径保存到数据库
         boolean flag=teamService.addTeamLogo(name,teamId);
+        if (flag){
+            return new ResultVO<>();
+        }else{
+            return new ResultVO<>(500,"上传失败");
+        }
     }
 
 
