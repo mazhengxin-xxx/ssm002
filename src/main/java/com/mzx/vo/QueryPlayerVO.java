@@ -18,6 +18,16 @@ public class QueryPlayerVO {
 
     private String nationality;
 
+    private Integer teamId;
+
+    public Integer getTeamId() {
+        return teamId;
+    }
+
+    public void setTeamId(Integer teamId) {
+        this.teamId = teamId;
+    }
+
     public String getPlayerName() {
         return playerName;
     }

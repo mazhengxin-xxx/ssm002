@@ -357,6 +357,9 @@
       <if test="endDate!=null">
         and p.birthday &lt; #{endDate}
       </if>
+      <if test="teamId!=null and teamId!=-1">
+        and p.teamId = #{teamId}
+      </if>
     </where>
   </select>
 </mapper>

@@ -18,7 +18,7 @@
 		<form id="myForm" class="form-horizontal">
 			<h2>NBA球员列表</h2>
 			<div class="searchDiv">
-				<button class="btn btn-danger">批量删除</button>
+
 				<a href="/pages/player/add.html" class="btn btn-success">添加</a>
 				球员名称:<input name="playerName" placeholder="名字,模糊查询"/>
 				球员号码:<input name="playerNum" placeholder="球员号码" type="number" min="0" max="100"/>
@@ -30,6 +30,7 @@
 <!--					<option value="1">西部联盟</option>-->
 <!--				</select>-->
 				国籍:<input name="nationality" type="text" placeholder="国籍，准确查询"/>
+				所属队伍:<select name="teamId" class="form-control" id="selectTeam"></select>
 				<button type="button" onclick="loadData()" class="btn btn-info">查询</button>
 				<button type="reset" class="btn btn-warning">重置</button>
 			</div>
@@ -110,6 +111,28 @@
 	//页面加载完毕之后发送异步请求
 	$(function(){
 		loadData();
+
+		$.ajax({//用来多选框的显示，ajax获得team所有信息，拼参id和中文名
+			url:"/team/getIdAndChineseName",
+			type:'get',
+			dataType:'json',
+			success:function(vo){
+				//返回一个vo 里面是list
+				let list=vo.list;
+				let str="";
+				str+='<option value="-1">请选择队伍</option>';
+				for(let i=0;i<list.length;i++){
+					let obj=list[i];
+					let teamId=obj.teamId;
+					let teamName=obj.chineseName;
+
+					str+='<option value="'+teamId+'">'+teamName+'</option>';
+				}
+				$("#selectTeam").html(str);
+			}
+		});
+
+
 		$("ul[class='pagination']>li").click(function(){
 			if(($(this).attr("class"))=='disabled')
 				return;

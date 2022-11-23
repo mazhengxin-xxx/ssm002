@@ -42,7 +42,7 @@ public class PlayerServiceImpl implements PlayerService {
     public boolean deleteById(Integer id) {
         Player player = playerMapper.selectByPrimaryKey(id);
         player.setIsDel(1);
-        int i = playerMapper.updateByPrimaryKey(player);
+        int i = playerMapper.updateByPrimaryKeySelective(player);
         if (i==1){
             return true;
         }else{
@@ -59,7 +59,7 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public boolean updateById(Player player) {
         player.setIsDel(0);
-        int i = playerMapper.updateByPrimaryKey(player);
+        int i = playerMapper.updateByPrimaryKeySelective(player);
         if (i==1){
             return  true;
         }else {

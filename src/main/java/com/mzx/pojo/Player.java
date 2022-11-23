@@ -1,34 +1,37 @@
 package com.mzx.pojo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-
+//@ApiModel("球员信息")
 public class Player {
+    //@ApiModelProperty(value = "球员主键",required = true)
     private Integer playerId;
-
+    //@ApiModelProperty("球员姓名")
     private String playerName;
-
+   // @ApiModelProperty("球员号码")
     private Integer playerNum;
-
+    //@ApiModelProperty("球员位置")
     private String location;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    //@ApiModelProperty("球员生日")
     private Date birthday;
-
+    //@ApiModelProperty("球员国籍")
     private String nationality;
-
+    //@ApiModelProperty("球员身高")
     private Double height;
-
+    //@ApiModelProperty("球员体重")
     private Double weight;
-
+    //@ApiModelProperty("球员工资")
     private Double salary;
-
+    //@ApiModelProperty("所属队伍id")
     private Integer teamId;
-
+    //@ApiModelProperty("是否在职")
     private Integer status;
-
+    //@ApiModelProperty("是否删除")
     private Integer isDel;
 
     public Integer getPlayerId() {

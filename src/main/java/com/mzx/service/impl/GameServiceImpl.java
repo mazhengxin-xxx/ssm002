@@ -59,7 +59,7 @@ public class GameServiceImpl implements GameService {
     public boolean deleteById(Integer id) {
         Game game = gameMapper.selectByPrimaryKey(id);
         game.setIsDel(1);
-        int i = gameMapper.updateByPrimaryKey(game);
+        int i = gameMapper.updateByPrimaryKeySelective(game);
         if (i==1){
             return true;
         }else {
@@ -87,7 +87,7 @@ public class GameServiceImpl implements GameService {
     @Override
     public boolean updateGame(Game game) {
         game.setIsDel(0);
-        int i = gameMapper.updateByPrimaryKey(game);
+        int i = gameMapper.updateByPrimaryKeySelective(game);
         if (i==1){
             return true;
         }else{

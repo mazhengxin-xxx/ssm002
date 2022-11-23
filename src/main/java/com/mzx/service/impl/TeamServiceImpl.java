@@ -92,7 +92,7 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public boolean updateTeam(Team team) {
         team.setIsDel(0);//防止没有
-        int i = teamMapper.updateByPrimaryKey(team);
+        int i = teamMapper.updateByPrimaryKeySelective(team);
         if (i==1){
             return true;
         }else {
@@ -110,7 +110,7 @@ public class TeamServiceImpl implements TeamService {
     public boolean addTeamLogo(String name, Integer teamId) {
         Team team = teamMapper.selectByPrimaryKey(teamId);
         team.setTeamLogo(name);
-        int i = teamMapper.updateByPrimaryKey(team);
+        int i = teamMapper.updateByPrimaryKeySelective(team);
         if (i==1){
             return true;
         }else {
