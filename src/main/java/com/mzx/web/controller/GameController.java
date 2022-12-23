@@ -19,6 +19,8 @@ import java.util.Date;
 @RestController
 @RequestMapping("/game")
 //@Api(tags="比赛记录接口")
+
+
 public class GameController {
     @InitBinder
     public void initBinder(ServletRequestDataBinder binder){
