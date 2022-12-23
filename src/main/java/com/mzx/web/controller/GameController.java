@@ -101,6 +101,7 @@ public class GameController {
     @RequestMapping(value = "/{gameId}",method = RequestMethod.PUT)
     public ResultVO updateGame(Game game){
         boolean flag=gameService.updateGame(game);
+        System.out.println(flag);
         if (flag){
             return new ResultVO();
         }else{
